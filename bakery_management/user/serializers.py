@@ -20,7 +20,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         is_admin = validated_data['is_staff']
 
         if is_admin:
-            user.is_active = False
+            user.is_active = False #admin user can only be allowed by superadmin
             user.save()
 
         return user
