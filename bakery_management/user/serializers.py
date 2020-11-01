@@ -17,7 +17,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = super(CreateUserSerializer, self).create(validated_data)
-        is_admin = validated_data['is_staff']
+        is_admin = validated_data.get('is_staff', False)
 
         if is_admin:
             user.is_active = False #admin user can only be allowed by superadmin
