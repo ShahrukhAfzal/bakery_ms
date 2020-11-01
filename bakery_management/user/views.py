@@ -1,13 +1,27 @@
 from django.contrib.auth.models import User
-from user.serializers import UserSerializer
 
-from rest_framework import viewsets, permissions
+from rest_framework import generics
+from rest_framework.response import Response
+from knox.models import AuthToken
+
+from user.serializers import UserSerializer, CreateUserSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class RegisterAPI(generics.GenericAPIView):
     """
-    API endpoint that allows users to be viewed or edited.
+    User can register through this api
     """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = CreateUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        _, token = AuthToken.objects.create(user)
+
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()
+                                ).data,
+            "token": token
+        })
+
