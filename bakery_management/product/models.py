@@ -25,4 +25,4 @@ class ProductIngredient(models.Model):
                 on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredients, related_name='products',
                 on_delete=models.SET_NULL, blank=True, null=True)
-    quantity_percent = models.FloatField()
+    quantity_percent = models.FloatField(default=0)
