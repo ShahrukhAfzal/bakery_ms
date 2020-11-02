@@ -5,6 +5,7 @@ from product import views
 
 router = routers.DefaultRouter()
 router.register(r'ingredients', views.IngredientsViewSet)
+router.register(r'products', views.ProductViewSet)
 
 
 urlpatterns = [

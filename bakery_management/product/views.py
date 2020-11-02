@@ -9,3 +9,9 @@ class IngredientsViewSet(viewsets.ModelViewSet):
 
     queryset = Ingredients.objects.all()
     serializer_class = IngredientsSerializer
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer

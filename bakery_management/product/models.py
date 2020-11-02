@@ -4,8 +4,8 @@ from django.db import models
 class Product(models.Model):
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=255, null=True, blank=True)
-    cost_price = models.FloatField()
-    selling_price = models.FloatField()
+    cost_price = models.FloatField(default=0)
+    selling_price = models.FloatField(default=0)
     quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
