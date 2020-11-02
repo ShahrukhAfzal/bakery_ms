@@ -6,7 +6,7 @@ from product.models import Product, Ingredients
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('name', 'description', 'cost_price', 'selling_price',
+        fields = ('id', 'name', 'description', 'cost_price', 'selling_price',
                     'quantity'
                 )
 
@@ -14,5 +14,5 @@ class ProductSerializer(serializers.ModelSerializer):
 class IngredientsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredients
-        fields = ('name', 'description')
+        fields = ('id', 'name', 'description')
 
