@@ -7,6 +7,8 @@ class Product(models.Model):
     cost_price = models.FloatField(default=0)
     selling_price = models.FloatField(default=0)
     quantity = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    added_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return "{} = ${}".format(self.name, self.selling_price)
