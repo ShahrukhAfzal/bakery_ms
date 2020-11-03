@@ -7,6 +7,8 @@ class Product(models.Model):
     cost_price = models.FloatField(default=0)
     selling_price = models.FloatField(default=0)
     quantity = models.PositiveIntegerField(default=0)
+    ingredients = models.ManyToManyField('Ingredients',
+        through='ProductIngredient',related_name='product_ingredients')
     is_active = models.BooleanField(default=True)
     added_on = models.DateTimeField(auto_now_add=True)
 
