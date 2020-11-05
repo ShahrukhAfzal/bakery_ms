@@ -10,26 +10,33 @@ class OrderProductSerializer(serializers.ModelSerializer):
         fields = ('__all__',)
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Product
-        fields = ('id', 'quantity')
+        model = OrderDetails
+        fields = ('quantity', 'product')
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):
-    products = OrderSerializer(many=True)
+    products = OrderDetailSerializer(many=True,write_only=True)
+    product_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
-        fields = ('id', 'products')
+        fields = ['products', 'product_details' ]
+
+    def get_product_details(self, obj):
+        return list(obj.order_detail.values())
 
     def create(self, validated_data):
         products = validated_data.pop('products')
         instance = super().create(validated_data)
 
-        for each in products:
-            OrderDetails.objects.create(order=instance, product_id=each['id'], quantity=each['quantity'])
+        for product in products:
+            OrderDetails.objects.create(order=instance,
+                                        product=product['product'],
+                                        quantity=product['quantity']
+                                    )
 
         return instance
 
