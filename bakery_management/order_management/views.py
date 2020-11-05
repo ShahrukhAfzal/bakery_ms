@@ -5,6 +5,6 @@ from order_management.serializers import  CreateOrderSerializer
 
 class OrderView(mixins.ListModelMixin,
                 mixins.CreateModelMixin,
-                GenericAPIView):
+                generics.GenericAPIView):
     queryset = Order.objects.order_by('id')
     serializer_class = CreateOrderSerializer
