@@ -1,4 +1,7 @@
+from django.db.models import Sum
+
 from rest_framework import serializers
+
 from order_management.models import Order, OrderDetails
 from product.serializers import ProductSerializer, IngredientsSerializer
 from product.models import Product
@@ -14,13 +17,13 @@ class OrderProductSerializer(serializers.ModelSerializer):
 class CreateOrderSerializer(serializers.ModelSerializer):
     products = OrderProductSerializer(many=True, write_only=True)
     product_details = serializers.SerializerMethodField()
+    total_price = serializers.SerializerMethodField()
+    customer_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
-        fields = ['id', 'products', 'product_details' ]
-
-    def get_product_details(self, obj):
-        return list(obj.order_detail.values())
+        fields = ['id', 'customer_name', 'products', 'product_details',
+                    'total_price', 'order_date']
 
     def create(self, validated_data):
         products = validated_data.pop('products')
@@ -47,7 +50,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
         return instance
 
-
     def validate_products(self, products):
 
         for product in products:
@@ -55,6 +57,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             available_quantity = product_obj.available_quantity
             quantity_to_buy = product['quantity']
             product_name = product_obj.name
+
             if (available_quantity < quantity_to_buy):
                     error = "Only {} Products are available for {}".format(
                                 available_quantity, product_name)
@@ -66,3 +69,20 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
 
         return products
+
+    def get_product_details(self, obj):
+        return list(obj.order_detail.values())
+
+    def get_total_price(self, obj):
+        #get the total price for all the products order
+        return obj.order_detail.all().aggregate(Sum('ordered_price')
+                                                ).get('ordered_price__sum', 0)
+
+    def get_customer_name(self, obj):
+        if obj.customer:
+            return "{} {}".format(
+                        obj.customer.first_name,
+                        obj.customer.last_name
+                    )
+
+        return "Anonymous"
