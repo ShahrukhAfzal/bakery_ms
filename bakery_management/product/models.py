@@ -31,8 +31,6 @@ class ProductInventoryDetail(models.Model):
                     null=True, blank=True,)
 
 
-
-
 class Ingredients(models.Model):
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=255, null=True, blank=True)
