@@ -17,6 +17,18 @@ class ProductIngredientSerializer(serializers.ModelSerializer):
         model = ProductIngredient
         fields = ('ingredient_id', 'ingredient_detail', 'quantity_percent')
 
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        user = self.context.get('request').user
+
+        if not user.is_staff:
+            restricted_fields = ('id')
+
+            for field in restricted_fields:
+                fields.pop(field)
+
+        return fields
+
     def get_ingredient_detail(self, obj):
         return IngredientsSerializer(obj.ingredient).data
 
@@ -31,6 +43,18 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'cost_price', 'selling_price',
                     'available_quantity', 'ingredients_details', 'ingredients'
                 )
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        user = self.context.get('request').user
+
+        if not user.is_staff:
+            restricted_fields = ('cost_price', 'id', 'available_quantity')
+
+            for field in restricted_fields:
+                fields.pop(field)
+
+        return fields
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients_details')
