@@ -51,12 +51,18 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     def validate_products(self, products):
 
         for product in products:
-            available_quantity = product['product'].available_quantity
+            product_obj = product['product']
+            available_quantity = product_obj.available_quantity
             quantity_to_buy = product['quantity']
-            product_name = product['product'].name
-            if available_quantity < quantity_to_buy:
+            product_name = product_obj.name
+            if (available_quantity < quantity_to_buy):
                     error = "Only {} Products are available for {}".format(
                                 available_quantity, product_name)
                     raise serializers.ValidationError(error)
+
+            if not product_obj.is_active:
+                error = "{} is not available.".format(product_name)
+                raise serializers.ValidationError(error)
+
 
         return products
