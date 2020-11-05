@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from product.models import Product, Ingredients, ProductIngredient
+from product.models import (Product, Ingredients, ProductIngredient,
+    ProductInventoryDetail)
 
 
 class IngredientsSerializer(serializers.ModelSerializer):
@@ -28,7 +29,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'name', 'description', 'cost_price', 'selling_price',
-                    'quantity', 'ingredients_details', 'ingredients'
+                    'available_quantity', 'ingredients_details', 'ingredients'
                 )
 
     def create(self, validated_data):
@@ -42,7 +43,24 @@ class ProductSerializer(serializers.ModelSerializer):
 
         return instance
 
-
     def get_ingredients(self, obj):
 
         return ProductIngredientSerializer(obj.products.all(), many=True).data
+
+
+class ProductInventoryUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductInventoryDetail
+        fields = ('product', 'quantity_added')
+
+    def create(self, validated_data):
+        user = self.context.get('request').user
+        validated_data.update({'added_by': user})
+        instance = super().create(validated_data)
+
+        product = validated_data.get('product')
+        product.available_quantity += validated_data.get('quantity_added', 0)
+        product.save()
+
+        return instance
