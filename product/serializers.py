@@ -17,17 +17,17 @@ class ProductIngredientSerializer(serializers.ModelSerializer):
         model = ProductIngredient
         fields = ('ingredient_id', 'ingredient_detail', 'quantity_percent')
 
-    def get_fields(self, *args, **kwargs):
-        fields = super().get_fields(*args, **kwargs)
-        user = self.context.get('request').user
+        def get_fields(self, *args, **kwargs):
+            fields = super().get_fields(*args, **kwargs)
+            user = self.context.get('request').user
 
-        if not user.is_staff:
-            restricted_fields = ('id')
+            if not user.is_staff:
+                restricted_fields = ('id',)
 
-            for field in restricted_fields:
-                fields.pop(field)
+                for field in restricted_fields:
+                    fields.pop(field)
 
-        return fields
+            return fields
 
     def get_ingredient_detail(self, obj):
         return IngredientsSerializer(obj.ingredient).data
@@ -46,7 +46,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # We pass the "upper serializer" context to the "nested one"
         self.fields['ingredients_details'].context.update(self.context)
 
     def get_fields(self, *args, **kwargs):
