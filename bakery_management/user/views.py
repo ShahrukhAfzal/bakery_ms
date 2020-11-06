@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, mixins, views
 from rest_framework.response import Response
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.models import AuthToken
@@ -9,6 +9,10 @@ from knox.views import LoginView as KnoxLoginView
 
 from user.serializers import UserSerializer, CreateUserSerializer
 
+
+class Welcome(views.APIView):
+    def get(self, request):
+        return Response({'message': 'Welcome'})
 
 class RegisterAPI(generics.GenericAPIView):
     """
