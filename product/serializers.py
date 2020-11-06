@@ -44,6 +44,11 @@ class ProductSerializer(serializers.ModelSerializer):
                     'available_quantity', 'ingredients_details', 'ingredients'
                 )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # We pass the "upper serializer" context to the "nested one"
+        self.fields['ingredients_details'].context.update(self.context)
+
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
         user = self.context.get('request').user
@@ -55,7 +60,6 @@ class ProductSerializer(serializers.ModelSerializer):
                 fields.pop(field)
 
         return fields
-
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients_details')
         instance = super().create(validated_data)
