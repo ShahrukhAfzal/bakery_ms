@@ -258,4 +258,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-*git*
+
+*db.sqlite3
+
+*.pyo
+*.pyc
