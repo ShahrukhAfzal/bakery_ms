@@ -1,1 +1,1 @@
-# bakery_ms
+# BAKERY MANAGEMENT SYSTEM
