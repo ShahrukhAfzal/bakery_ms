@@ -3,6 +3,7 @@ from order_management.models import Order
 from order_management.serializers import  CreateOrderSerializer
 
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderView(generics.ListCreateAPIView,
+                generics.GenericAPIView):
     queryset = Order.objects.order_by('id')
     serializer_class = CreateOrderSerializer
