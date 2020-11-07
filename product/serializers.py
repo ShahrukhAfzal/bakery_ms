@@ -15,7 +15,7 @@ class ProductIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductIngredient
-        fields = ('ingredient_id', 'ingredient_detail', 'quantity_percent')
+        fields = ('ingredient', 'ingredient_detail', 'quantity_percent')
 
         def get_fields(self, *args, **kwargs):
             fields = super().get_fields(*args, **kwargs)
@@ -66,8 +66,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
         for ingredient in ingredients:
             ProductIngredient.objects.create(
-                ingredient=ingredient['ingredient'], product=instance,
-                quantity_percent=ingredient['quantity_percent'])
+                ingredient=ingredient.get('ingredient'),
+                product=instance,
+                quantity_percent=ingredient.get('quantity_percent'))
 
         return instance
 
