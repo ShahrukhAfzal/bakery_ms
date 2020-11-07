@@ -59,8 +59,9 @@ class ProductSerializer(serializers.ModelSerializer):
                 fields.pop(field)
 
         return fields
+
     def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients_details')
+        ingredients = validated_data.pop('ingredients_details', [])
         instance = super().create(validated_data)
 
         for ingredient in ingredients:
