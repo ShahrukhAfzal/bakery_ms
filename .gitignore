@@ -259,3 +259,5 @@ dmypy.json
 .pyre/
 
 *git*
+
+*db.sqlite3
