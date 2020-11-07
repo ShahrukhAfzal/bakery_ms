@@ -48,8 +48,13 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
 
-        return super(LoginAPI, self).post(request, format=None)
+        data = super(LoginAPI, self).post(request, format=None).data
 
+        #updating token
+        token = "token " + data.get('token')
+        data.update({'token': token})
+
+        return Response({"data": data})
 
 
 @api_view(('GET',))
