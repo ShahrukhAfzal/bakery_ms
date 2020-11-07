@@ -1,9 +1,13 @@
+from collections import OrderedDict
+
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 
 from rest_framework import generics, permissions, mixins, views
 from rest_framework.response import Response
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
 from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 
@@ -13,6 +17,7 @@ from user.serializers import UserSerializer, CreateUserSerializer
 class Welcome(views.APIView):
     def get(self, request):
         return Response({'message': 'Welcome'})
+
 
 class RegisterAPI(generics.GenericAPIView):
     """
@@ -44,3 +49,25 @@ class LoginAPI(KnoxLoginView):
         login(request, user)
 
         return super(LoginAPI, self).post(request, format=None)
+
+
+
+@api_view(('GET',))
+def api_root(request, format=None):
+    return Response(OrderedDict([
+        {"*****************************", "********************** Bakery Management APIs"},
+        ('User API', OrderedDict([
+            ('register user', reverse('register', request=request, format=format)),
+            ('login user', reverse('login', request=request, format=format)),
+            ('logout user', reverse('logout', request=request, format=format)),
+            ])
+        ),
+        ('Product API', OrderedDict([
+            ('product-list', reverse('product-list', request=request, format=format))
+            # ('product-detail', reverse('product-detail', request=request, format=format, args=[10]))
+            ])
+        )
+
+
+
+    ]))
