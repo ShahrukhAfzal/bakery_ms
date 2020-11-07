@@ -1,7 +1,7 @@
 # BAKERY MANAGEMENT SYSTEM
 
 ## Prerequisite
-Your system must have python3 installed.
+Your system must have installed python3.
 
 If not, please [Install Python](https://www.python.org/downloads/).
 
